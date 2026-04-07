@@ -1,7 +1,18 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import './CalendarGrid.css'
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+// A custom mapping of holidays for visual creative flair
+const HOLIDAYS = {
+  '1-1': 'New Year\'s Day 🎆',
+  '2-14': 'Valentine\'s Day 💖',
+  '3-17': 'St. Patrick\'s Day ☘️',
+  '7-4': 'Independence Day 🇺🇸',
+  '10-31': 'Halloween 🎃',
+  '12-25': 'Christmas 🎄',
+  '12-31': 'New Year\'s Eve 🥂'
+}
 
 function isSameDay(a, b) {
   if (!a || !b) return false
@@ -27,6 +38,8 @@ export default function CalendarGrid({
   startDate, endDate, hoverDate,
   onDayClick, onDayHover, onDayLeave
 }) {
+  const [flippingDirection, setFlippingDirection] = useState(null)
+
   const cells = useMemo(() => {
     const firstDay = new Date(year, month, 1).getDay()
     const daysInMonth = new Date(year, month + 1, 0).getDate()
@@ -46,19 +59,17 @@ export default function CalendarGrid({
     return result
   }, [year, month])
 
-  const activeEnd = endDate || hoverDate
-
   return (
-    <div className="calendar-grid-wrapper">
-      <div className="day-headers" role="row">
+    <div className="calendar-grid-wrapper fluid">
+      <div className="day-headers fluid-headers" role="row">
         {DAYS.map((d, i) => (
-          <div key={d} className={`day-header${i === 0 ? ' sunday' : i === 6 ? ' saturday' : ''}`} role="columnheader">{d}</div>
+          <div key={d} className={`day-header fluid-header${i === 0 ? ' sunday' : i === 6 ? ' saturday' : ''}`} role="columnheader">{d}</div>
         ))}
       </div>
-      <div className="day-grid" role="grid" aria-label="Calendar">
+      <div className="day-grid fluid-grid" role="grid">
         {cells.map((cell, idx) => {
           if (!cell.current) {
-            return <div key={idx} className="day-cell ghost" aria-hidden="true"><span>{cell.day}</span></div>
+            return <div key={idx} className="day-cell fluid-cell ghost"><span>{cell.day}</span></div>
           }
 
           const d = cell.date
@@ -68,8 +79,10 @@ export default function CalendarGrid({
           const isEnd = isSameDay(d, endDate)
           const inRange = endDate ? isInRange(d, startDate, endDate) : isInHoverRange(d, startDate, hoverDate)
           const isHovered = isSameDay(d, hoverDate)
+          
+          let holidayText = HOLIDAYS[`${month + 1}-${cell.day}`]
 
-          let cls = 'day-cell'
+          let cls = 'day-cell fluid-cell'
           if (!endDate && isStart && hoverDate && hoverDate < startDate) {
             cls += ' selected-end'
           } else if (!endDate && isHovered && startDate && hoverDate < startDate) {
@@ -85,17 +98,18 @@ export default function CalendarGrid({
           return (
             <div
               key={idx}
-              id={`day-${year}-${month + 1}-${cell.day}`}
               className={cls}
               role="gridcell"
-              aria-label={d.toDateString()}
-              aria-selected={isStart || isEnd}
               onClick={() => onDayClick(d)}
               onMouseEnter={() => onDayHover(d)}
               onMouseLeave={onDayLeave}
             >
-              <span className="day-number">{cell.day}</span>
-              {isToday && <span className="today-dot" />}
+              <div className="day-cell-content">
+                <span className="day-number fluid-number">{cell.day}</span>
+                {holidayText && <span className="holiday-indicator" title={holidayText}>✦</span>}
+                {holidayText && <div className="holiday-tooltip">{holidayText}</div>}
+              </div>
+              {isToday && <span className="today-dot fluid-dot" />}
             </div>
           )
         })}

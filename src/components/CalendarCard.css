@@ -1,139 +1,272 @@
-.calendar-card {
-  width: 100%;
-  max-width: 920px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow), 0 0 0 1px var(--border);
-  overflow: hidden;
-  animation: slideUp 0.5s cubic-bezier(0.4,0,0.2,1) both;
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.calendar-hero {
+/* ── FULL SCREEN LAYOUT ── */
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  height: 220px;
   overflow: hidden;
-  flex-shrink: 0;
+  background: var(--bg);
+  transition: --accent 0.5s, --accent-glow 0.5s, --accent-2 0.5s, --bg 0.5s;
 }
 
-.hero-img {
+/* ── DOMINANT THEMES ── */
+.theme-default {
+  --accent: #7c6aff;
+  --accent-glow: rgba(124, 106, 255, 0.4);
+  --accent-2: #ff6a9b;
+}
+
+.theme-sunset {
+  --accent: #ff7e67;
+  --accent-glow: rgba(255, 126, 103, 0.4);
+  --accent-2: #f9d423;
+  --bg: #1c1417;
+  --surface: #241a1d;
+  --surface-2: #2d1f23;
+}
+
+.theme-aurora {
+  --accent: #00e5ff;
+  --accent-glow: rgba(0, 229, 255, 0.4);
+  --accent-2: #69f0ae;
+  --bg: #0b1a1c;
+  --surface: #12282a;
+  --surface-2: #183639;
+}
+
+.ambient-background {
+  position: absolute;
+  inset: -50px;
+  z-index: 0;
+  filter: blur(80px) brightness(0.3);
+  pointer-events: none;
+}
+.ambient-background img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 60%;
-  display: block;
-  transition: transform 8s ease;
+  opacity: 0.6;
 }
 
-.calendar-card:hover .hero-img {
-  transform: scale(1.04);
+/* ── BINDER ── */
+.full-calendar-binder {
+  position: relative;
+  width: 96vw;
+  max-width: 1600px;
+  height: 90vh;
+  max-height: 950px;
+  display: flex;
+  background: var(--surface);
+  border-radius: 28px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px var(--border);
+  z-index: 10;
+  overflow: hidden;
+  perspective: 2000px;
 }
 
-.hero-overlay {
+/* ── PAGES ── */
+.binder-page {
+  flex: 1;
+  height: 100%;
+  position: relative;
+}
+
+.left-page {
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.right-page {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+}
+
+.full-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-vignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(10,10,16,0.15) 0%, rgba(10,10,16,0.5) 60%, rgba(10,10,16,0.85) 100%);
+  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
 }
 
-.hero-content {
+/* ── GLASMORPHIC CLOCK ── */
+.glass-clock-widget {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 28px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.spiral-holes {
-  position: absolute;
-  top: -110px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-  padding: 0 20px;
-}
-
-.spiral-hole {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.7);
-  border: 2px solid rgba(255,255,255,0.12);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.month-nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.nav-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: var(--text-primary);
-  transition: background var(--transition), transform var(--transition);
-  backdrop-filter: blur(8px);
-}
-
-.nav-btn:hover {
-  background: rgba(124,106,255,0.3);
-  border-color: var(--accent);
-  transform: scale(1.1);
-}
-.nav-btn:active { transform: scale(0.95); }
-
-.month-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  min-width: 200px;
-}
-
-.month-name {
-  font-size: 2rem;
-  font-weight: 700;
+  bottom: 40px;
+  left: 40px;
+  background: rgba(20, 20, 30, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 24px 32px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.4);
   color: #fff;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  transition: transform 0.3s;
+}
+
+.glass-clock-widget:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.clock-time {
+  font-size: 4rem;
+  font-weight: 700;
   line-height: 1;
+  letter-spacing: -2px;
+  margin-bottom: 8px;
+  background: linear-gradient(to right, #fff, rgba(255,255,255,0.7));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.month-year {
-  font-size: 0.875rem;
+.clock-date {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.7);
   font-weight: 400;
-  color: rgba(255,255,255,0.65);
-  letter-spacing: 2px;
+  letter-spacing: 0.5px;
 }
 
-.calendar-body {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0;
+.theme-switcher {
+  position: absolute;
+  top: 30px;
+  left: 30px;
 }
 
-@media (max-width: 640px) {
-  .calendar-body {
-    grid-template-columns: 1fr;
-  }
-  .calendar-hero { height: 180px; }
-  .month-name { font-size: 1.5rem; }
-  .spiral-holes { gap: 36px; }
+.theme-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+.theme-btn:hover { background: var(--accent); border-color: var(--accent); transform: rotate(45deg); }
+
+/* ── SPIRAL CENTER ── */
+.center-spiral {
+  width: 50px;
+  background: linear-gradient(to right, rgba(0,0,0,0.2), rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.2));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  border-left: 1px solid rgba(0,0,0,0.3);
+  border-right: 1px solid rgba(255,255,255,0.05);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  z-index: 20;
+}
+
+.hardware-ring {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.hole {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #000;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.metal-coil {
+  position: absolute;
+  left: -8px;
+  right: -8px;
+  height: 14px;
+  background: linear-gradient(to bottom, #cfd8dc 0%, #78909c 20%, #455a64 50%, #90a4ae 80%, #eceff1 100%);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.6);
+  z-index: 2;
+}
+
+/* ── RIGHT CALENDAR NAV ── */
+.month-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 60px 20px;
+}
+
+.massive-nav {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.massive-nav:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.month-title-huge {
+  text-align: center;
+}
+
+.month-huge-name {
+  display: block;
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.month-huge-year {
+  display: block;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 4px;
+  margin-top: 4px;
+}
+
+.calendar-interactive-area {
+  flex: 1;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.notes-dock {
+  height: 240px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+/* Responsive constraints */
+@media (max-width: 1024px) {
+  .full-calendar-binder { flex-direction: column; perspective: none; }
+  .center-spiral { display: none; }
+  .left-page { flex: none; height: 350px; }
+  .notes-dock { height: auto; }
 }

@@ -1,121 +1,158 @@
-.calendar-grid-wrapper {
+.calendar-grid-wrapper.fluid {
   flex: 1;
-  padding: 20px 24px 24px;
-  border-right: 1px solid var(--border);
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.day-headers {
+.day-headers.fluid-headers {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 6px;
+  margin-bottom: 12px;
 }
 
-.day-header {
+.fluid-header {
   text-align: center;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
-  padding: 6px 0;
+  padding: 12px 0;
 }
 
-.day-header.sunday  { color: var(--sunday);   }
-.day-header.saturday { color: var(--saturday); }
+.fluid-header.sunday  { color: var(--sunday);   }
+.fluid-header.saturday { color: var(--saturday); }
 
-.day-grid {
+.day-grid.fluid-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
+  gap: 8px;
+  flex: 1;
 }
 
-.day-cell {
+.fluid-cell {
   position: relative;
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: background var(--transition), transform var(--transition), color var(--transition);
-  user-select: none;
-  outline: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  background: var(--surface-3); /* transparent initially */
+  border: 1px solid transparent;
 }
 
-.day-cell .day-number {
-  font-size: 0.875rem;
-  font-weight: 500;
-  z-index: 1;
-  transition: color var(--transition), font-weight var(--transition);
+.day-cell-content {
+  position: relative;
+  width: 100%;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
-.day-cell:hover:not(.ghost) {
+.fluid-cell:hover:not(.ghost) {
   background: var(--surface-2);
-  transform: scale(1.12);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  border-color: rgba(255,255,255,0.05);
+  z-index: 5;
 }
 
-.day-cell.ghost {
-  cursor: default;
-  opacity: 0.18;
+.fluid-number {
+  font-size: 1.3rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 10;
 }
 
-.day-cell.sunday  .day-number { color: var(--sunday); }
-.day-cell.saturday .day-number { color: var(--saturday); }
+.fluid-cell.ghost { cursor: default; opacity: 0.1; }
 
-.day-cell.today {
-  background: var(--today-bg);
-}
+.fluid-cell.sunday .fluid-number { color: var(--sunday); }
+.fluid-cell.saturday .fluid-number { color: var(--saturday); }
 
-.today-dot {
+.fluid-cell.today { background: var(--today-bg); border-color: rgba(255,106,155,0.3); }
+
+.today-dot.fluid-dot {
   position: absolute;
-  bottom: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
+  top: 18px;
+  right: 18px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--accent-2);
+  box-shadow: 0 0 12px var(--accent-2);
 }
 
-.day-cell.in-range {
+.in-range.fluid-cell {
   background: var(--range-bg);
-  border-radius: 0;
-  transform: none;
+  border-radius: 8px; /* Slightly less rounded for contiguous feel */
+  transform: scale(0.98);
 }
+.in-range.fluid-cell:hover { background: rgba(124,106,255,0.25); transform: translateY(0) scale(1); }
 
-.day-cell.in-range:hover {
-  background: rgba(124, 106, 255, 0.2);
-  transform: none;
-}
-
-.day-cell.selected-start {
+.selected-start.fluid-cell {
   background: var(--accent) !important;
-  border-radius: 10px 0 0 10px;
-  transform: none !important;
-  box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 16px var(--accent-glow);
+  border-radius: 16px 6px 6px 16px;
+  box-shadow: 0 0 0 4px var(--accent-glow), 0 10px 30px var(--accent-glow);
+  transform: scale(1.05) !important;
+  z-index: 10;
 }
-.day-cell.selected-start .day-number { color: #fff !important; font-weight: 700; }
+.selected-start.fluid-cell .fluid-number { color: #fff !important; font-weight: 800; font-size: 1.5rem; }
 
-.day-cell.selected-end {
+.selected-end.fluid-cell {
   background: var(--accent) !important;
-  border-radius: 0 10px 10px 0;
-  transform: none !important;
-  box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 16px var(--accent-glow);
+  border-radius: 6px 16px 16px 6px;
+  box-shadow: 0 0 0 4px var(--accent-glow), 0 10px 30px var(--accent-glow);
+  transform: scale(1.05) !important;
+  z-index: 10;
 }
-.day-cell.selected-end .day-number { color: #fff !important; font-weight: 700; }
+.selected-end.fluid-cell .fluid-number { color: #fff !important; font-weight: 800; font-size: 1.5rem; }
 
-.day-cell.selected-start.selected-end { border-radius: 10px; }
+.selected-start.selected-end.fluid-cell { border-radius: 16px; }
 
-.day-cell.selected-start, .day-cell.selected-end {
-  animation: popIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+/* ── Holiday features ── */
+.holiday-indicator {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  font-size: 1.2rem;
+  opacity: 0.8;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  transition: 0.3s;
 }
 
-@keyframes popIn {
-  from { transform: scale(0.8); opacity: 0.5; }
-  to   { transform: scale(1);   opacity: 1; }
+.holiday-tooltip {
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(255,255,255,0.95);
+  color: #000;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+  z-index: 20;
 }
 
-@media (max-width: 640px) {
-  .calendar-grid-wrapper { padding: 16px; border-right: none; border-bottom: 1px solid var(--border); }
-  .day-cell .day-number { font-size: 0.78rem; }
+.fluid-cell:hover .holiday-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.fluid-cell.selected-start, .fluid-cell.selected-end {
+  animation: dynamicPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes dynamicPop {
+  0%   { transform: scale(0.85); background: #fff; }
+  100% { transform: scale(1.05); }
 }
