@@ -1,0 +1,121 @@
+.calendar-grid-wrapper {
+  flex: 1;
+  padding: 20px 24px 24px;
+  border-right: 1px solid var(--border);
+}
+
+.day-headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+}
+
+.day-header {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 6px 0;
+}
+
+.day-header.sunday  { color: var(--sunday);   }
+.day-header.saturday { color: var(--saturday); }
+
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.day-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition), color var(--transition);
+  user-select: none;
+  outline: none;
+}
+
+.day-cell .day-number {
+  font-size: 0.875rem;
+  font-weight: 500;
+  z-index: 1;
+  transition: color var(--transition), font-weight var(--transition);
+}
+
+.day-cell:hover:not(.ghost) {
+  background: var(--surface-2);
+  transform: scale(1.12);
+}
+
+.day-cell.ghost {
+  cursor: default;
+  opacity: 0.18;
+}
+
+.day-cell.sunday  .day-number { color: var(--sunday); }
+.day-cell.saturday .day-number { color: var(--saturday); }
+
+.day-cell.today {
+  background: var(--today-bg);
+}
+
+.today-dot {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent-2);
+}
+
+.day-cell.in-range {
+  background: var(--range-bg);
+  border-radius: 0;
+  transform: none;
+}
+
+.day-cell.in-range:hover {
+  background: rgba(124, 106, 255, 0.2);
+  transform: none;
+}
+
+.day-cell.selected-start {
+  background: var(--accent) !important;
+  border-radius: 10px 0 0 10px;
+  transform: none !important;
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 16px var(--accent-glow);
+}
+.day-cell.selected-start .day-number { color: #fff !important; font-weight: 700; }
+
+.day-cell.selected-end {
+  background: var(--accent) !important;
+  border-radius: 0 10px 10px 0;
+  transform: none !important;
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 16px var(--accent-glow);
+}
+.day-cell.selected-end .day-number { color: #fff !important; font-weight: 700; }
+
+.day-cell.selected-start.selected-end { border-radius: 10px; }
+
+.day-cell.selected-start, .day-cell.selected-end {
+  animation: popIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0.5; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .calendar-grid-wrapper { padding: 16px; border-right: none; border-bottom: 1px solid var(--border); }
+  .day-cell .day-number { font-size: 0.78rem; }
+}
