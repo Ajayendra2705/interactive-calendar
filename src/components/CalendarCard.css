@@ -55,7 +55,7 @@
   position: relative;
   width: 96vw;
   max-width: 1600px;
-  height: 90vh;
+  min-height: 85vh; /* Allow it to expand if needed */
   max-height: 950px;
   display: flex;
   background: var(--surface);
@@ -106,7 +106,7 @@
   background: rgba(20, 20, 30, 0.4);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  padding: 24px 32px;
+  padding: 32px 40px; /* Symmetrical padding */
   border-radius: 24px;
   border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 16px 32px rgba(0,0,0,0.4);
@@ -122,11 +122,12 @@
 .clock-time {
   font-size: 4rem;
   font-weight: 700;
-  line-height: 1;
+  line-height: 0.9; /* Tighter line height to prevent bottom displacement */
   letter-spacing: -2px;
-  margin-bottom: 8px;
+  margin-bottom: 4px; /* Reduced margin */
   background: linear-gradient(to right, #fff, rgba(255,255,255,0.7));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -141,6 +142,7 @@
   position: absolute;
   top: 30px;
   left: 30px;
+  z-index: 100;
 }
 
 .theme-btn {
@@ -264,9 +266,51 @@
 }
 
 /* Responsive constraints */
-@media (max-width: 1024px) {
-  .full-calendar-binder { flex-direction: column; perspective: none; }
+@media (max-width: 1100px) {
+  .full-calendar-binder { 
+    flex-direction: column; 
+    height: auto; 
+    max-height: none;
+    width: 95vw;
+    margin: 20px auto;
+  }
   .center-spiral { display: none; }
-  .left-page { flex: none; height: 350px; }
-  .notes-dock { height: auto; }
+  .left-page { 
+    flex: none; 
+    height: 40vh; 
+    min-height: 300px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .glass-clock-widget {
+    bottom: 24px;
+    left: 24px;
+    padding: 16px 24px 20px;
+  }
+  .clock-time { font-size: 3rem; }
+  
+  .month-nav-header { padding: 30px 40px 10px; }
+  .month-huge-name { font-size: 2.5rem; }
+  
+  .notes-dock { 
+    height: auto; 
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .full-calendar-binder { 
+    width: 100vw;
+    margin: 0;
+    border-radius: 0;
+  }
+  .app-container { padding: 0; }
+  .left-page { height: 30vh; }
+  .month-nav-header { padding: 20px; }
+  .month-huge-name { font-size: 2rem; }
+  .massive-nav { width: 44px; height: 44px; }
+  .calendar-interactive-area { padding: 0 15px; }
+  .glass-clock-widget { bottom: 15px; left: 15px; padding: 12px 18px 14px; border-radius: 16px; }
+  .clock-time { font-size: 2.2rem; }
+  .clock-date { font-size: 0.9rem; }
 }

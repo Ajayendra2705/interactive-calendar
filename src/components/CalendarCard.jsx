@@ -95,15 +95,15 @@ export default function CalendarCard() {
         </div>
 
         {/* MIDDLE BINDER RING */}
-        <div className="center-spiral">
-          {Array.from({ length: 14 }).map((_, i) => (
-            <div key={i} className="hardware-ring">
-              <div className="hole dark-hole" />
-              <div className="metal-coil" />
-              <div className="hole light-hole" />
-            </div>
-          ))}
-        </div>
+          <div className="center-spiral">
+            {Array.from({ length: 30 }).map((_, i) => (
+              <div key={i} className="hardware-ring">
+                <div className="hole dark-hole" />
+                <div className="metal-coil" />
+                <div className="hole light-hole" />
+              </div>
+            ))}
+          </div>
 
         {/* RIGHT PAGE: Calendar & Nav */}
         <div className="binder-page right-page">
