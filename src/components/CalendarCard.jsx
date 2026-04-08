@@ -4,8 +4,8 @@ import NotesPanel from './NotesPanel'
 import './CalendarCard.css'
 
 const MONTHS = [
-  'January','February','March','April','May','June',
-  'July','August','September','October','November','December'
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
 ]
 
 function useCurrentTime() {
@@ -25,9 +25,10 @@ export default function CalendarCard() {
   const [endDate, setEndDate] = useState(null)
   const [hoverDate, setHoverDate] = useState(null)
   
-  // Theme state
   const [themeIndex, setThemeIndex] = useState(0)
-  const themes = ['theme-default', 'theme-sunset', 'theme-aurora']
+  const themes = ['theme-obsidian', 'theme-sunset', 'theme-aurora']
+
+  const [isJournalOpen, setIsJournalOpen] = useState(true)
 
   const prevMonth = useCallback(() => {
     setViewMonth(m => {
@@ -45,12 +46,10 @@ export default function CalendarCard() {
 
   const handleDayClick = useCallback((date) => {
     if (!startDate || (startDate && endDate)) {
-      setStartDate(date)
-      setEndDate(null)
+      setStartDate(date); setEndDate(null)
     } else {
       if (date < startDate) {
-        setEndDate(startDate)
-        setStartDate(date)
+        setEndDate(startDate); setStartDate(date)
       } else {
         setEndDate(date)
       }
@@ -62,19 +61,20 @@ export default function CalendarCard() {
   }, [])
 
   return (
-    <div className={`app-container ${themes[themeIndex]}`}>
-      {/* Cinematic Background Blur */}
-      <div className="ambient-background">
-        <img src="/hero.png" aria-hidden="true" />
+    <div className={`premium-app-container ${themes[themeIndex]}`}>
+      
+      <div className="cinematic-backdrop">
+        <img src="/hero.png" aria-hidden="true" alt="" />
       </div>
 
-      <div className="full-calendar-binder">
-        {/* LEFT PAGE: Hero Image & Clock */}
-        <div className="binder-page left-page">
-          <img src="/hero.png" alt="Artwork" className="full-hero-img" />
-          <div className="hero-vignette" />
+      <main className="luxury-planner-binder">
+        
+        {/* ── 1. IMAGE PANEL ── */}
+        <section className="binder-page visual-panel">
+          <img src="/hero.png" alt="Scenery" className="hero-artwork" />
+          <div className="artwork-overlay" />
           
-          <div className="glass-clock-widget">
+          <div className="bento-clock-glass">
             <h2 className="clock-time">
               {today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
             </h2>
@@ -83,66 +83,79 @@ export default function CalendarCard() {
             </p>
           </div>
 
-          <div className="theme-switcher">
-            <button 
-              className="theme-btn" 
-              onClick={() => setThemeIndex((prev) => (prev + 1) % themes.length)}
-              title="Change Theme"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
-            </button>
-          </div>
+          <button 
+            className="glass-icon-btn theme-toggle-btn" 
+            onClick={() => setThemeIndex((prev) => (prev + 1) % themes.length)}
+            title="Cycle Theme"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
+          </button>
+        </section>
+
+        {/* ── SPIRAL BINDING (Desktop Only) ── */}
+        <div className="physical-spiral-binding">
+          {Array.from({ length: 32 }).map((_, i) => (
+            <div key={i} className="metal-ring-assembly">
+              <div className="paper-hole left-hole" />
+              <div className="titanium-coil" />
+              <div className="paper-hole right-hole" />
+            </div>
+          ))}
         </div>
 
-        {/* MIDDLE BINDER RING */}
-          <div className="center-spiral">
-            {Array.from({ length: 30 }).map((_, i) => (
-              <div key={i} className="hardware-ring">
-                <div className="hole dark-hole" />
-                <div className="metal-coil" />
-                <div className="hole light-hole" />
-              </div>
-            ))}
-          </div>
-
-        {/* RIGHT PAGE: Calendar & Nav */}
-        <div className="binder-page right-page">
-          <div className="month-nav-header">
-            <button className="nav-btn massive-nav" onClick={prevMonth} aria-label="Previous month">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        {/* ── 2. CALENDAR PANEL ── */}
+        <section className="binder-page calendar-panel">
+          <header className="calendar-header-nav">
+            <button className="glass-icon-btn nav-arrow" onClick={prevMonth}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <div className="month-title-huge">
-              <span className="month-huge-name">{MONTHS[viewMonth]}</span>
-              <span className="month-huge-year">{viewYear}</span>
+            
+            <div className="month-display-hero">
+              <h1 className="month-name-text">{MONTHS[viewMonth]}</h1>
+              <span className="month-year-text">{viewYear}</span>
             </div>
-            <button className="nav-btn massive-nav" onClick={nextMonth} aria-label="Next month">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          </div>
 
-          <div className="calendar-interactive-area">
+            <div className="header-actions-right">
+              <button className="glass-icon-btn nav-arrow" onClick={nextMonth}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+              
+              <div className="action-divider" />
+              
+              <button 
+                className={`glass-icon-btn layout-toggle-btn ${isJournalOpen ? 'is-active' : ''}`} 
+                onClick={() => setIsJournalOpen(!isJournalOpen)}
+                title={isJournalOpen ? "Hide Journal" : "Show Journal"}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+              </button>
+            </div>
+          </header>
+
+          <div className="calendar-grid-container">
             <CalendarGrid
-              year={viewYear}
-              month={viewMonth}
-              today={today}
-              startDate={startDate}
-              endDate={endDate}
-              hoverDate={hoverDate}
-              onDayClick={handleDayClick}
-              onDayHover={setHoverDate}
-              onDayLeave={() => setHoverDate(null)}
+              year={viewYear} month={viewMonth} today={today}
+              startDate={startDate} endDate={endDate} hoverDate={hoverDate}
+              onDayClick={handleDayClick} onDayHover={setHoverDate} onDayLeave={() => setHoverDate(null)}
             />
           </div>
+        </section>
 
-          <div className="notes-dock">
-             <NotesPanel
-              startDate={startDate}
-              endDate={endDate}
-              onClear={clearSelection}
-             />
+        {/* ── MOBILE BACKDROP FOR DRAWER ── */}
+        <div 
+          className={`mobile-drawer-backdrop ${isJournalOpen ? 'is-open' : ''}`}
+          onClick={() => setIsJournalOpen(false)}
+          aria-hidden="true"
+        />
+
+        {/* ── 3. JOURNAL PANEL (Desktop Column OR Mobile Drawer) ── */}
+        <aside className={`binder-page journal-panel ${isJournalOpen ? 'is-open' : 'is-closed'}`}>
+          <div className="journal-content-lock">
+             <NotesPanel startDate={startDate} endDate={endDate} onClear={clearSelection} />
           </div>
-        </div>
-      </div>
+        </aside>
+
+      </main>
     </div>
   )
 }

@@ -1,316 +1,462 @@
-/* ── FULL SCREEN LAYOUT ── */
-.app-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  background: var(--bg);
-  transition: --accent 0.5s, --accent-glow 0.5s, --accent-2 0.5s, --bg 0.5s;
-}
-
-/* ── DOMINANT THEMES ── */
-.theme-default {
-  --accent: #7c6aff;
-  --accent-glow: rgba(124, 106, 255, 0.4);
-  --accent-2: #ff6a9b;
+/* ── THEME PALETTES ── */
+.theme-obsidian {
+  --accent: #8b7cff;
+  --accent-glow: rgba(139, 124, 255, 0.35);
+  --accent-2: #ff76a7;
+  --bg: #0a0a0c;
+  --surface: #121216;
+  --surface-raised: #1a1a20;
+  --border: hsla(240, 20%, 80%, 0.08);
+  --border-highlight: hsla(240, 20%, 100%, 0.15);
+  --text-primary: #f0f0f5;
+  --text-secondary: #a0a0b0;
 }
 
 .theme-sunset {
-  --accent: #ff7e67;
-  --accent-glow: rgba(255, 126, 103, 0.4);
-  --accent-2: #f9d423;
-  --bg: #1c1417;
-  --surface: #241a1d;
-  --surface-2: #2d1f23;
+  --accent: #ff6b6b;
+  --accent-glow: rgba(255, 107, 107, 0.35);
+  --accent-2: #feca57;
+  --bg: #140d0f;
+  --surface: #1e1417;
+  --surface-raised: #281a1f;
+  --border: hsla(350, 20%, 80%, 0.08);
+  --border-highlight: hsla(350, 20%, 100%, 0.15);
+  --text-primary: #fff0f5;
+  --text-secondary: #bbaaa0;
 }
 
 .theme-aurora {
   --accent: #00e5ff;
-  --accent-glow: rgba(0, 229, 255, 0.4);
+  --accent-glow: rgba(0, 229, 255, 0.35);
   --accent-2: #69f0ae;
   --bg: #0b1a1c;
   --surface: #12282a;
-  --surface-2: #183639;
+  --surface-raised: #183639;
+  --border: hsla(180, 20%, 80%, 0.08);
+  --border-highlight: hsla(180, 20%, 100%, 0.15);
+  --text-primary: #f0ffff;
+  --text-secondary: #90b0b0;
 }
 
-.ambient-background {
+/* ── GLOBAL APP CONTAINER ── */
+.premium-app-container {
+  /* On desktop, this locks the screen and kills page scroll */
+  position: fixed; 
+  inset: 0; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Outfit', -apple-system, sans-serif;
+  transition: background 0.6s ease;
+}
+
+/* ── CINEMATIC BACKDROP ── */
+.cinematic-backdrop {
   position: absolute;
-  inset: -50px;
+  inset: -80px;
   z-index: 0;
-  filter: blur(80px) brightness(0.3);
+  filter: blur(90px) saturate(150%) brightness(0.25);
   pointer-events: none;
 }
-.ambient-background img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.6;
-}
+.cinematic-backdrop img { width: 100%; height: 100%; object-fit: cover; }
 
-/* ── BINDER ── */
-.full-calendar-binder {
+/* ── THE MAIN BINDER (DASHBOARD) ── */
+.luxury-planner-binder {
   position: relative;
   width: 96vw;
   max-width: 1600px;
-  min-height: 85vh; /* Allow it to expand if needed */
-  max-height: 950px;
+  height: 92vh; /* Strictly bounded for desktop */
   display: flex;
+  flex-direction: row;
   background: var(--surface);
-  border-radius: 28px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px var(--border);
+  border-radius: 24px;
+  /* Premium 3D Shadow Stack */
+  box-shadow: 
+    0 50px 100px -20px rgba(0,0,0,0.9),
+    0 30px 60px -30px rgba(0,0,0,0.7),
+    inset 0 1px 1px hsla(0,0%,100%,0.08),
+    0 0 0 1px var(--border);
   z-index: 10;
-  overflow: hidden;
-  perspective: 2000px;
 }
 
-/* ── PAGES ── */
 .binder-page {
-  flex: 1;
   height: 100%;
   position: relative;
-}
-
-.left-page {
-  border-right: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.right-page {
   display: flex;
   flex-direction: column;
-  background: var(--surface);
 }
 
-.full-hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+/* ── PANEL 1: VISUALS (35%) ── */
+.visual-panel {
+  flex: 0 0 35%;
+  position: relative;
+  border-right: 1px solid var(--border);
+  background: #000;
+  overflow: hidden;
+  border-radius: 24px 0 0 24px;
 }
 
-.hero-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.6) 100%);
+.hero-artwork { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+.artwork-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%),
+              radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.4) 100%);
   pointer-events: none;
 }
 
-/* ── GLASMORPHIC CLOCK ── */
-.glass-clock-widget {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-  background: rgba(20, 20, 30, 0.4);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: 32px 40px; /* Symmetrical padding */
-  border-radius: 24px;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 16px 32px rgba(0,0,0,0.4);
-  color: #fff;
-  transition: transform 0.3s;
+/* Glass Clock Bento */
+.bento-clock-glass {
+  position: absolute; bottom: 40px; left: 40px;
+  background: hsla(0, 0%, 5%, 0.4);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  padding: 24px 32px;
+  border-radius: 20px;
+  border: 1px solid hsla(0,0%,100%,0.15);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 1px hsla(0,0%,100%,0.2);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-
-.glass-clock-widget:hover {
-  transform: translateY(-4px);
-  border-color: rgba(255,255,255,0.2);
-}
+.bento-clock-glass:hover { transform: translateY(-4px); border-color: hsla(0,0%,100%,0.3); }
 
 .clock-time {
-  font-size: 4rem;
-  font-weight: 700;
-  line-height: 0.9; /* Tighter line height to prevent bottom displacement */
-  letter-spacing: -2px;
-  margin-bottom: 4px; /* Reduced margin */
-  background: linear-gradient(to right, #fff, rgba(255,255,255,0.7));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: clamp(2.5rem, 4vw, 4.5rem); 
+  font-weight: 800; line-height: 0.9; letter-spacing: -2px;
+  color: #ffffff; margin-bottom: 6px;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
+.clock-date { font-size: clamp(0.9rem, 1vw, 1.1rem); color: hsla(0,0%,100%,0.8); font-weight: 500; }
 
-.clock-date {
-  font-size: 1.1rem;
-  color: rgba(255,255,255,0.7);
-  font-weight: 400;
-  letter-spacing: 0.5px;
-}
+.theme-toggle-btn { position: absolute; top: 32px; left: 32px; z-index: 100; border-radius: 50%; backdrop-filter: blur(10px); background: rgba(0,0,0,0.3); }
 
-.theme-switcher {
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  z-index: 100;
-}
-
-.theme-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s;
-}
-.theme-btn:hover { background: var(--accent); border-color: var(--accent); transform: rotate(45deg); }
-
-/* ── SPIRAL CENTER ── */
-.center-spiral {
-  width: 50px;
-  background: linear-gradient(to right, rgba(0,0,0,0.2), rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.2));
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  border-left: 1px solid rgba(0,0,0,0.3);
-  border-right: 1px solid rgba(255,255,255,0.05);
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+/* ── 3D SPIRAL BINDING ── */
+.physical-spiral-binding {
+  width: 44px;
+  background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.4));
+  display: flex; flex-direction: column; justify-content: space-evenly; align-items: center;
+  border-left: 1px solid rgba(0,0,0,0.5); border-right: 1px solid hsla(0,0%,100%,0.05);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
   z-index: 20;
 }
 
-.hardware-ring {
-  position: relative;
-  width: 100%;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
+.metal-ring-assembly {
+  position: relative; width: 100%; height: 16px;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 4px;
 }
-
-.hole {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #000;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+.paper-hole {
+  width: 12px; height: 12px; border-radius: 50%; background: #050505;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,1), 0 1px 0 hsla(0,0%,100%,0.1);
 }
-
-.metal-coil {
-  position: absolute;
-  left: -8px;
-  right: -8px;
-  height: 14px;
-  background: linear-gradient(to bottom, #cfd8dc 0%, #78909c 20%, #455a64 50%, #90a4ae 80%, #eceff1 100%);
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.6);
+.titanium-coil {
+  position: absolute; left: -10px; right: -10px; height: 14px;
+  background: linear-gradient(180deg, #d8d8d8 0%, #ffffff 20%, #8a8a8a 45%, #3a3a3a 55%, #6e6e6e 80%, #b8b8b8 100%);
+  border-radius: 8px; border: 1px solid rgba(0,0,0,0.4);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.8), inset 0 1px 2px hsla(0,0%,100%,0.8);
   z-index: 2;
 }
 
-/* ── RIGHT CALENDAR NAV ── */
-.month-nav-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 40px 60px 20px;
+/* ── PANEL 2: CALENDAR GRID (Flexible) ── */
+.calendar-panel {
+  flex: 1; /* Automatically takes remaining horizontal space */
+  background: var(--surface);
+  transition: flex 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  min-width: 0; 
+  min-height: 0; /* Prevents vertical blowout */
 }
 
-.massive-nav {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  background: var(--surface-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s;
-  color: var(--text-primary);
-  border: 1px solid var(--border);
+.calendar-header-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4vh 4vw 2vh; flex-shrink: 0;
 }
 
-.massive-nav:hover {
-  background: var(--accent);
-  color: #fff;
-  transform: scale(1.1);
+.month-display-hero { text-align: center; }
+.month-name-text {
+  font-size: clamp(2rem, 3.5vw, 4rem); font-weight: 800; line-height: 1; letter-spacing: -2px;
+  background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.month-year-text {
+  display: block; font-size: clamp(0.9rem, 1.2vw, 1.2rem); color: var(--accent);
+  font-weight: 700; letter-spacing: 0.4em; margin-top: 8px; text-transform: uppercase;
+}
+
+.header-actions-right { display: flex; align-items: center; gap: 12px; }
+.action-divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+
+/* Premium Glass Buttons */
+.glass-icon-btn {
+  width: clamp(40px, 4vw, 48px); height: clamp(40px, 4vw, 48px); border-radius: 14px;
+  background: var(--surface-raised); border: 1px solid var(--border);
+  color: var(--text-secondary); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.glass-icon-btn:hover {
+  background: hsla(0,0%,100%,0.05); color: var(--text-primary); border-color: var(--border-highlight);
+  transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.layout-toggle-btn.is-active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
   box-shadow: 0 8px 24px var(--accent-glow);
 }
 
-.month-title-huge {
-  text-align: center;
+.calendar-grid-container { flex: 1; padding: 0 4vw; display: flex; flex-direction: column; min-height: 0; }
+
+/* ── PANEL 3: JOURNAL (25%) ── */
+.journal-panel {
+  flex: 0 0 25%;
+  background: hsla(0,0%,0%,0.2);
+  border-left: 1px solid var(--border);
+  border-radius: 0 24px 24px 0;
+  transition: flex 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+  overflow: hidden;
+  min-width: 0; 
+  min-height: 0;
 }
 
-.month-huge-name {
-  display: block;
-  font-size: 3.5rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -1px;
+.journal-panel.is-closed {
+  flex: 0 0 0%;
+  border-left-color: transparent;
+  opacity: 0;
 }
 
-.month-huge-year {
-  display: block;
-  font-size: 1.25rem;
-  color: var(--text-muted);
-  font-weight: 500;
-  letter-spacing: 4px;
-  margin-top: 4px;
-}
-
-.calendar-interactive-area {
-  flex: 1;
-  padding: 0 40px;
+.journal-content-lock {
+  width: 100%; /* Maps perfectly to the 25% panel */
+  height: 100%;
+  min-width: 280px; /* Safe minimum during horizontal close animation */
   display: flex;
   flex-direction: column;
 }
 
-.notes-dock {
-  height: 240px;
-  border-top: 1px solid var(--border);
-  background: var(--surface-2);
+
+/* ══════════════════════════════════════════════════
+   🚀 RESPONSIVE RULES (TABLET & MOBILE) 
+   ══════════════════════════════════════════════════ */
+
+/* TABLET & SMALL DESKTOP (< 1100px) */
+@media (max-width: 1100px) {
+  /* Release the fixed lock so the page can scroll natively */
+  .premium-app-container {
+    position: relative;
+    height: 100vh;
+    overflow-y: auto; 
+    padding: 24px;
+    align-items: flex-start; /* Push content to the top */
+  }
+
+  .luxury-planner-binder { 
+    flex-direction: column; 
+    height: auto; /* Let the height grow with the content */
+    max-height: none; 
+    width: 100%; 
+  }
+
+  /* Image Panel becomes a top header */
+  .visual-panel { 
+    flex: none; 
+    height: 300px; 
+    border-right: none; 
+    border-bottom: 1px solid var(--border); 
+    border-radius: 24px 24px 0 0; 
+  }
+  
+  .physical-spiral-binding { display: none; }
+  
+  /* Journal Panel drops to the bottom and slides vertically */
+  .journal-panel { 
+    flex: none; 
+    width: 100%; 
+    height: 450px; /* Fixed height for tablet stack */
+    border-left: none; 
+    border-top: 1px solid var(--border); 
+    border-radius: 0 0 24px 24px; 
+    transition: height 0.4s ease, opacity 0.3s ease; 
+  }
+  
+  .journal-panel.is-closed { 
+    height: 0; 
+    flex: none; 
+    border-top-color: transparent;
+  }
+  
+  .journal-content-lock { min-width: 0; }
+  
+  .calendar-header-nav { padding: 30px; }
 }
 
-/* Responsive constraints */
+/* MOBILE PHONES (< 768px) */
+@media (max-width: 768px) {
+  .premium-app-container { padding: 12px; }
+  
+  .luxury-planner-binder { border-radius: 16px; }
+  
+  .visual-panel { height: 220px; border-radius: 16px 16px 0 0; }
+  .journal-panel { border-radius: 0 0 16px 16px; }
+  
+  .bento-clock-glass { 
+    bottom: 16px; 
+    left: 16px; 
+    padding: 12px 20px; 
+    border-radius: 14px;
+  }
+  
+  .clock-time { font-size: 2.2rem; }
+  .theme-toggle-btn { top: 16px; left: 16px; }
+  
+  .calendar-header-nav { padding: 20px; flex-direction: column; gap: 20px; }
+  .header-actions-right { width: 100%; justify-content: space-between; }
+  
+  .calendar-grid-container { padding: 0 20px 20px; }
+}
+
+/* ── THEME PALETTES ── */
+.theme-obsidian {
+  --accent: #8b7cff; --accent-glow: rgba(139, 124, 255, 0.35); --accent-2: #ff76a7;
+  --bg: #0a0a0c; --surface: #121216; --surface-raised: #1a1a20;
+  --border: hsla(240, 20%, 80%, 0.08); --border-highlight: hsla(240, 20%, 100%, 0.15);
+  --text-primary: #f0f0f5; --text-secondary: #a0a0b0;
+}
+.theme-sunset {
+  --accent: #ff6b6b; --accent-glow: rgba(255, 107, 107, 0.35); --accent-2: #feca57;
+  --bg: #140d0f; --surface: #1e1417; --surface-raised: #281a1f;
+  --border: hsla(350, 20%, 80%, 0.08); --border-highlight: hsla(350, 20%, 100%, 0.15);
+  --text-primary: #fff0f5; --text-secondary: #bbaaa0;
+}
+.theme-aurora {
+  --accent: #00e5ff; --accent-glow: rgba(0, 229, 255, 0.35); --accent-2: #69f0ae;
+  --bg: #0b1a1c; --surface: #12282a; --surface-raised: #183639;
+  --border: hsla(180, 20%, 80%, 0.08); --border-highlight: hsla(180, 20%, 100%, 0.15);
+  --text-primary: #f0ffff; --text-secondary: #90b0b0;
+}
+
+/* ── GLOBAL SCREEN LOCK ── */
+.premium-app-container {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; background: var(--bg); color: var(--text-primary);
+  font-family: 'Outfit', -apple-system, sans-serif; transition: background 0.6s ease;
+}
+
+.cinematic-backdrop { position: absolute; inset: -80px; z-index: 0; filter: blur(90px) saturate(150%) brightness(0.25); pointer-events: none; }
+.cinematic-backdrop img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── MAIN DESKTOP BINDER ── */
+.luxury-planner-binder {
+  position: relative; width: 96vw; max-width: 1700px; height: 92vh; display: flex; flex-direction: row;
+  background: var(--surface); border-radius: 24px; z-index: 10;
+  box-shadow: 0 50px 100px -20px rgba(0,0,0,0.9), 0 30px 60px -30px rgba(0,0,0,0.7), inset 0 1px 1px hsla(0,0%,100%,0.08), 0 0 0 1px var(--border);
+}
+
+.binder-page { height: 100%; position: relative; display: flex; flex-direction: column; }
+
+/* 1. VISUALS (35%) */
+.visual-panel { flex: 0 0 35%; border-right: 1px solid var(--border); background: #000; overflow: hidden; border-radius: 24px 0 0 24px; }
+.hero-artwork { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+.artwork-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%), radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.4) 100%); pointer-events: none; }
+
+.bento-clock-glass {
+  position: absolute; bottom: 40px; left: 40px; background: hsla(0, 0%, 5%, 0.4); backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
+  padding: 24px 32px; border-radius: 20px; border: 1px solid hsla(0,0%,100%,0.15); box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 1px hsla(0,0%,100%,0.2); transition: transform 0.4s ease;
+}
+.bento-clock-glass:hover { transform: translateY(-4px); border-color: hsla(0,0%,100%,0.3); }
+.clock-time { font-size: clamp(2.5rem, 4vw, 4.5rem); font-weight: 800; line-height: 0.9; letter-spacing: -2px; color: #ffffff; margin-bottom: 6px; text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.clock-date { font-size: clamp(0.9rem, 1vw, 1.1rem); color: hsla(0,0%,100%,0.8); font-weight: 500; }
+.theme-toggle-btn { position: absolute; top: 32px; left: 32px; z-index: 100; border-radius: 50%; backdrop-filter: blur(10px); background: rgba(0,0,0,0.3); }
+
+/* 3D SPIRAL */
+.physical-spiral-binding { width: 44px; background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.4)); display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; border-left: 1px solid rgba(0,0,0,0.5); border-right: 1px solid hsla(0,0%,100%,0.05); box-shadow: inset 0 0 20px rgba(0,0,0,0.8); z-index: 20; }
+.metal-ring-assembly { position: relative; width: 100%; height: 16px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
+.paper-hole { width: 12px; height: 12px; border-radius: 50%; background: #050505; box-shadow: inset 0 3px 6px rgba(0,0,0,1), 0 1px 0 hsla(0,0%,100%,0.1); }
+.titanium-coil { position: absolute; left: -10px; right: -10px; height: 14px; background: linear-gradient(180deg, #d8d8d8 0%, #ffffff 20%, #8a8a8a 45%, #3a3a3a 55%, #6e6e6e 80%, #b8b8b8 100%); border-radius: 8px; border: 1px solid rgba(0,0,0,0.4); box-shadow: 0 8px 12px rgba(0,0,0,0.8), inset 0 1px 2px hsla(0,0%,100%,0.8); z-index: 2; }
+
+/* 2. CALENDAR (Flexible) */
+.calendar-panel { flex: 1; background: var(--surface); transition: flex 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); min-width: 0; min-height: 0; }
+.calendar-header-nav { display: flex; align-items: center; justify-content: space-between; padding: 4vh 4vw 2vh; flex-shrink: 0; }
+.month-display-hero { text-align: center; }
+.month-name-text { font-size: clamp(2rem, 3.5vw, 4rem); font-weight: 800; line-height: 1; letter-spacing: -2px; background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.month-year-text { display: block; font-size: clamp(0.9rem, 1.2vw, 1.2rem); color: var(--accent); font-weight: 700; letter-spacing: 0.4em; margin-top: 8px; text-transform: uppercase; }
+.header-actions-right { display: flex; align-items: center; gap: 12px; }
+.action-divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+
+.glass-icon-btn { width: clamp(40px, 4vw, 48px); height: clamp(40px, 4vw, 48px); border-radius: 14px; background: var(--surface-raised); border: 1px solid var(--border); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.glass-icon-btn:hover { background: hsla(0,0%,100%,0.05); color: var(--text-primary); border-color: var(--border-highlight); transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+.layout-toggle-btn.is-active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 8px 24px var(--accent-glow); }
+.calendar-grid-container { flex: 1; padding: 0 4vw 20px; display: flex; flex-direction: column; min-height: 0; }
+
+/* 3. DESKTOP JOURNAL PANEL (25%) */
+.journal-panel {
+  flex: 0 0 25%; background: hsla(0,0%,0%,0.2); border-left: 1px solid var(--border); border-radius: 0 24px 24px 0;
+  transition: flex 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease; overflow: hidden; min-width: 0; min-height: 0;
+}
+.journal-panel.is-closed { flex: 0 0 0%; border-left-color: transparent; opacity: 0; }
+.journal-content-lock { width: 100%; height: 100%; min-width: 280px; display: flex; flex-direction: column; }
+
+/* Mobile Backdrop defaults to hidden */
+.mobile-drawer-backdrop { display: none; }
+
+
+/* ══════════════════════════════════════════════════
+   🚀 THE SLIDE-OVER DRAWER (TABLET/MOBILE < 1100px)
+   ══════════════════════════════════════════════════ */
 @media (max-width: 1100px) {
-  .full-calendar-binder { 
-    flex-direction: column; 
-    height: auto; 
-    max-height: none;
-    width: 95vw;
-    margin: 20px auto;
+  
+  .premium-app-container { padding: 0; } /* Full bleed edges */
+  
+  /* Split exactly 35 / 65 */
+  .luxury-planner-binder { flex-direction: column; width: 100vw; height: 100vh; border-radius: 0; border: none; }
+  .visual-panel { flex: 0 0 35vh; border-right: none; border-bottom: 1px solid var(--border); border-radius: 0; }
+  .calendar-panel { flex: 1; border-radius: 0; padding-bottom: 20px; }
+  .physical-spiral-binding { display: none; }
+  
+  /* ── THE MAGIC: Drawer Overlay ── */
+  .journal-panel {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 85vw; /* Leaves 15vw visible on left */
+    max-width: 420px;
+    height: 100%;
+    z-index: 100;
+    flex: none; /* Ignore flex-basis */
+    
+    border-radius: 24px 0 0 24px;
+    border-left: 1px solid hsla(0,0%,100%,0.15);
+    background: hsla(var(--surface-h), var(--surface-s), 8%, 0.95);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    box-shadow: -20px 0 80px rgba(0,0,0,0.8);
+    
+    transform: translateX(0);
+    transition: transform 0.5s cubic-bezier(0.3, 1, 0.3, 1), opacity 0.4s;
   }
-  .center-spiral { display: none; }
-  .left-page { 
-    flex: none; 
-    height: 40vh; 
-    min-height: 300px;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
+
+  .journal-panel.is-closed {
+    transform: translateX(100%);
+    opacity: 0;
+    box-shadow: none;
+    pointer-events: none;
   }
-  .glass-clock-widget {
-    bottom: 24px;
-    left: 24px;
-    padding: 16px 24px 20px;
+  
+  /* ── DRAWER BACKDROP ── */
+  .mobile-drawer-backdrop {
+    display: block; position: absolute; inset: 0;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    z-index: 90; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
   }
+  .mobile-drawer-backdrop.is-open { opacity: 1; pointer-events: auto; }
+
+  /* Pixel Tweaks */
+  .bento-clock-glass { bottom: 20px; left: 20px; padding: 16px 20px; border-radius: 16px; }
   .clock-time { font-size: 3rem; }
-  
-  .month-nav-header { padding: 30px 40px 10px; }
-  .month-huge-name { font-size: 2.5rem; }
-  
-  .notes-dock { 
-    height: auto; 
-    min-height: 300px;
-  }
+  .theme-toggle-btn { top: 20px; left: 20px; }
+  .calendar-header-nav { padding: 24px; }
 }
 
 @media (max-width: 600px) {
-  .full-calendar-binder { 
-    width: 100vw;
-    margin: 0;
-    border-radius: 0;
-  }
-  .app-container { padding: 0; }
-  .left-page { height: 30vh; }
-  .month-nav-header { padding: 20px; }
-  .month-huge-name { font-size: 2rem; }
-  .massive-nav { width: 44px; height: 44px; }
-  .calendar-interactive-area { padding: 0 15px; }
-  .glass-clock-widget { bottom: 15px; left: 15px; padding: 12px 18px 14px; border-radius: 16px; }
+  .calendar-header-nav { padding: 16px 20px; }
+  .glass-icon-btn { width: 40px; height: 40px; border-radius: 12px; }
+  .bento-clock-glass { bottom: 15px; left: 15px; padding: 12px 16px; }
   .clock-time { font-size: 2.2rem; }
-  .clock-date { font-size: 0.9rem; }
 }
+

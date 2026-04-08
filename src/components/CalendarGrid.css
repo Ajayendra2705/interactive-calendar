@@ -1,137 +1,217 @@
-.calendar-grid-wrapper.fluid {
+.premium-grid-wrapper {
   flex: 1;
-  padding: 10px 0;
+  min-height: 0; /* CRITICAL: Prevents CSS Grid from blowing out the Flexbox parent */
+  min-width: 0;
   display: flex;
   flex-direction: column;
+  padding-bottom: 20px;
 }
 
-.day-headers.fluid-headers {
+/* ── 1. DAY HEADERS (SUN - SAT) ── */
+.grid-headers {
+  flex: 0 0 auto;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px; /* Match the grid gap for perfect alignment */
+  gap: 12px;
   margin-bottom: 12px;
 }
 
-.fluid-header {
+.header-cell {
   text-align: center;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: clamp(0.7rem, 1vw, 0.8rem);
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  padding: 12px 0;
+  color: var(--text-secondary);
+  padding: 8px 0;
 }
 
-.fluid-header.sunday  { color: var(--sunday);   }
-.fluid-header.saturday { color: var(--saturday); }
+.header-cell.weekend {
+  color: var(--accent-2);
+  opacity: 0.8;
+}
 
-.day-grid.fluid-grid {
+/* ── 2. THE MAIN CALENDAR GRID ── */
+.grid-cells {
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  flex: 1;
+  grid-template-rows: repeat(6, minmax(0, 1fr)); /* Exactly 6 rows, perfect space distribution */
+  gap: 12px; 
 }
 
-.fluid-cell {
+/* Base cell styling */
+.day-cell {
   position: relative;
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border-radius: 12px;
   display: flex;
-  align-items: stretch;
-  justify-content: stretch;
-  background: var(--surface-3); /* transparent initially */
-  border: 1px solid transparent;
-}
-
-.day-cell-content {
-  position: relative;
-  width: 100%;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+  cursor: pointer;
+  z-index: 1; /* Establishes stacking context for the ribbon */
 }
 
-.fluid-cell:hover:not(.ghost) {
-  background: var(--surface-2);
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.05);
-  z-index: 5;
+/* The Ghost Cells (Previous/Next Month) */
+.ghost-cell {
+  opacity: 0.15;
+  cursor: default;
+  pointer-events: none;
 }
 
-.fluid-number {
-  font-size: 1.3rem;
-  font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+.cell-content-layer {
+  position: relative;
   z-index: 10;
+  width: 100%;
+  height: 100%;
+  padding: clamp(6px, 1vw, 12px);
+  display: flex;
+  flex-direction: column;
+  pointer-events: none; /* Let the parent cell catch the hover/click */
 }
 
-.fluid-cell.ghost { cursor: default; opacity: 0.1; }
+.day-text {
+  font-size: clamp(1rem, 1.2vw, 1.3rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color 0.3s ease, transform 0.2s ease;
+}
 
-.fluid-cell.sunday .fluid-number { color: var(--sunday); }
-.fluid-cell.saturday .fluid-number { color: var(--saturday); }
+.weekend .day-text { color: var(--accent-2); }
 
-.fluid-cell.today { background: var(--today-bg); border-color: rgba(255,106,155,0.3); }
-
-.today-dot.fluid-dot {
+/* ── 3. THE SPOTLIGHT HOVER EFFECT ── */
+.active-cell::after {
+  content: '';
   position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 8px;
-  height: 8px;
+  inset: 0;
+  border-radius: 12px;
+  /* The glow follows the mouse via JS vars, with a fallback center glow */
+  background: radial-gradient(
+    150px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+    hsla(0, 0%, 100%, 0.08), 
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.active-cell:hover:not(.ribbon-start):not(.ribbon-end):not(.in-range) {
+  transform: translateY(-2px);
+  background: hsla(0, 0%, 100%, 0.02);
+  box-shadow: 
+    0 8px 24px rgba(0,0,0,0.2),
+    inset 0 1px 1px hsla(0,0%,100%,0.05),
+    0 0 0 1px hsla(0,0%,100%,0.05);
+}
+
+.active-cell:hover::after { opacity: 1; }
+
+/* ── 4. CURRENT DAY HIGHLIGHT ── */
+.day-cell.is-today .day-text {
+  color: var(--accent-2);
+}
+
+.today-pulse-dot {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--accent-2);
   box-shadow: 0 0 12px var(--accent-2);
-}
-
-.in-range.fluid-cell {
-  background: var(--range-bg);
-  border-radius: 8px; /* Slightly less rounded for contiguous feel */
-  transform: scale(0.98);
-}
-.in-range.fluid-cell:hover { background: rgba(124,106,255,0.25); transform: translateY(0) scale(1); }
-
-.selected-start.fluid-cell {
-  background: var(--accent) !important;
-  border-radius: 16px 6px 6px 16px;
-  box-shadow: 0 0 0 4px var(--accent-glow), 0 10px 30px var(--accent-glow);
-  transform: scale(1.05) !important;
   z-index: 10;
+  animation: pulse 2s infinite;
 }
-.selected-start.fluid-cell .fluid-number { color: #fff !important; font-weight: 800; font-size: 1.5rem; }
 
-.selected-end.fluid-cell {
-  background: var(--accent) !important;
-  border-radius: 6px 16px 16px 6px;
-  box-shadow: 0 0 0 4px var(--accent-glow), 0 10px 30px var(--accent-glow);
-  transform: scale(1.05) !important;
-  z-index: 10;
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 118, 167, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(255, 118, 167, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 118, 167, 0); }
 }
-.selected-end.fluid-cell .fluid-number { color: #fff !important; font-weight: 800; font-size: 1.5rem; }
 
-.selected-start.selected-end.fluid-cell { border-radius: 16px; }
-
-/* ── Holiday features ── */
-.holiday-indicator {
+/* ── 5. THE CONTINUOUS RANGE RIBBON ── */
+/* The background connector that spans the grid gaps */
+.range-connector-bg {
   position: absolute;
-  bottom: 12px;
-  right: 12px;
-  font-size: 1.2rem;
-  opacity: 0.8;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-  transition: 0.3s;
+  top: 0;
+  bottom: 0;
+  /* Stretches exactly halfway across the 12px grid gap to meet the adjacent cell */
+  left: -6px;
+  right: -6px;
+  background: transparent;
+  z-index: -1;
+  transition: all 0.2s ease;
+  pointer-events: none;
 }
 
-.holiday-tooltip {
+/* Middle of the range */
+.day-cell.in-range .range-connector-bg {
+  background: hsla(240, 60%, 60%, 0.15); /* Soft wash of accent color */
+}
+
+/* Start of the range (Left side) */
+.day-cell.ribbon-start { z-index: 5; }
+.day-cell.ribbon-start .range-connector-bg {
+  left: 0; /* Cap the left edge */
+  background: linear-gradient(135deg, var(--accent), #a395ff);
+  border-radius: 12px 0 0 12px;
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+/* End of the range (Right side) */
+.day-cell.ribbon-end { z-index: 5; }
+.day-cell.ribbon-end .range-connector-bg {
+  right: 0; /* Cap the right edge */
+  background: linear-gradient(135deg, var(--accent), #a395ff);
+  border-radius: 0 12px 12px 0;
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+/* If Start and End are the SAME day */
+.day-cell.ribbon-start.ribbon-end .range-connector-bg {
+  left: 0;
+  right: 0;
+  border-radius: 12px;
+}
+
+/* Typography changes when strictly selected */
+.day-cell.ribbon-start .day-text,
+.day-cell.ribbon-end .day-text {
+  color: #ffffff;
+  font-weight: 800;
+  transform: scale(1.1);
+}
+
+.day-cell.ribbon-start .holiday-sparkle,
+.day-cell.ribbon-end .holiday-sparkle {
+  color: #ffffff;
+}
+
+/* ── 6. GLASSMORPHIC TOOLTIPS (HOLIDAYS) ── */
+.holiday-sparkle {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 0.9rem;
+  color: var(--accent);
+  opacity: 0.8;
+  transition: 0.2s;
+}
+
+.glass-tooltip {
   position: absolute;
   bottom: 110%;
   left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: rgba(255,255,255,0.95);
-  color: #000;
+  transform: translateX(-50%) translateY(8px);
+  background: hsla(0, 0%, 15%, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid hsla(0,0%,100%,0.1);
+  color: #fff;
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 0.75rem;
@@ -139,27 +219,105 @@
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: 0.3s;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-  z-index: 20;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.5);
+  z-index: 100;
 }
 
-.fluid-cell:hover .holiday-tooltip {
+.glass-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: hsla(0, 0%, 15%, 0.85);
+}
+
+.day-cell:hover .glass-tooltip {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-50%) translateY(-4px);
 }
 
-.fluid-cell.selected-start, .fluid-cell.selected-end {
-  animation: dynamicPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+/* ══════════════════════════════════════════════════
+   🚀 RESPONSIVE RULES (ALIGNED WITH CALENDARCARD) 
+   ══════════════════════════════════════════════════ */
+
+/* TABLET & SMALL DESKTOP (< 1100px) */
+@media (max-width: 1100px) {
+  .grid-cells { gap: 8px; }
+  .grid-headers { gap: 8px; }
+  
+  .day-cell { border-radius: 10px; }
+  
+  /* Adjust ribbon stretching for the new 8px gap (half of 8 = 4) */
+  .range-connector-bg { left: -4px; right: -4px; }
+  .day-cell.ribbon-start .range-connector-bg { border-radius: 10px 0 0 10px; left: 0; }
+  .day-cell.ribbon-end .range-connector-bg { border-radius: 0 10px 10px 0; right: 0; }
+  .day-cell.ribbon-start.ribbon-end .range-connector-bg { border-radius: 10px; }
+  
+  .today-pulse-dot { top: 8px; right: 8px; width: 5px; height: 5px; }
 }
 
-@media (max-width: 600px) {
-  .fluid-header { font-size: 0.8rem; padding: 8px 0; }
-  .day-grid.fluid-grid { gap: 4px; }
-  .day-cell-content { padding: 8px; }
-  .fluid-number { font-size: 0.9rem; }
-  .holiday-indicator { bottom: 4px; right: 4px; font-size: 0.8rem; }
-  .today-dot.fluid-dot { top: 8px; right: 8px; width: 5px; height: 5px; }
-  .selected-start.fluid-cell .fluid-number, 
-  .selected-end.fluid-cell .fluid-number { font-size: 1.1rem; }
+/* MOBILE PHONES (< 768px) */
+@media (max-width: 768px) {
+  .grid-cells { gap: 4px; }
+  .grid-headers { gap: 4px; margin-bottom: 8px; }
+  
+  .day-cell { border-radius: 8px; }
+  .cell-content-layer { padding: 4px 6px; }
+  
+  /* Adjust ribbon stretching for the new 4px gap (half of 4 = 2) */
+  .range-connector-bg { left: -2px; right: -2px; }
+  .day-cell.ribbon-start .range-connector-bg { border-radius: 8px 0 0 8px; left: 0; }
+  .day-cell.ribbon-end .range-connector-bg { border-radius: 0 8px 8px 0; right: 0; }
+  .day-cell.ribbon-start.ribbon-end .range-connector-bg { border-radius: 8px; }
+
+  .day-text { font-size: 0.9rem; }
+  .holiday-sparkle { bottom: 4px; right: 6px; font-size: 0.7rem; }
+  .today-pulse-dot { top: 6px; right: 6px; width: 4px; height: 4px; }
+  
+  .glass-tooltip { display: none; /* Tooltips often misbehave on small touch screens */ }
 }
+
+/* Perfectly aligned horizontal header for mobile */
+  .calendar-header-nav { 
+    padding: 16px 12px 12px; 
+    display: flex !important;
+    flex-direction: row !important; 
+    flex-wrap: nowrap !important; /* CRITICAL: Prevents stacking */
+    align-items: center !important; 
+    justify-content: space-between !important;
+    width: 100%;
+    gap: 8px; 
+  }
+  
+  .month-display-hero {
+    flex: 1; /* Pushes buttons to the edges */
+    min-width: 0; /* Prevents text overflow */
+  }
+
+  .header-actions-right { 
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: auto !important; 
+    justify-content: flex-end; 
+    gap: 6px; 
+  }
+  
+  .action-divider { display: none !important; } /* Hide divider */
+  
+  /* Shrink buttons strictly so they fit across the screen */
+  .glass-icon-btn { 
+    width: 34px !important; 
+    height: 34px !important; 
+    min-width: 34px !important; /* Prevents squishing */
+    border-radius: 10px; 
+    padding: 0 !important;
+  }
+  .glass-icon-btn svg { width: 16px !important; height: 16px !important; }
+  
+  .month-name-text { font-size: clamp(1.2rem, 5vw, 1.8rem); letter-spacing: -1px; }
+  .month-year-text { font-size: 0.75rem; margin-top: 2px; }

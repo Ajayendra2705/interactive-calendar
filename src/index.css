@@ -6,25 +6,62 @@
 
 :root {
   --font: 'Outfit', sans-serif;
-  --bg: #0f0f13;
-  --surface: #17171e;
-  --surface-2: #1e1e28;
-  --border: rgba(255,255,255,0.07);
-  --border-hover: rgba(255,255,255,0.14);
-  --text-primary: #f0f0f5;
-  --text-secondary: #8888a8;
-  --text-muted: #4a4a6a;
+  
+  /* Refined HSL Palette */
+  --bg-h: 240;
+  --bg-s: 10%;
+  --bg-l: 4%;
+  --bg: hsl(var(--bg-h), var(--bg-s), var(--bg-l));
+  
+  --surface-h: 240;
+  --surface-s: 12%;
+  --surface-l: 10%;
+  --surface: hsl(var(--surface-h), var(--surface-s), var(--surface-l));
+  --surface-2: hsl(var(--surface-h), var(--surface-s), 14%);
+  --surface-3: hsl(var(--surface-h), var(--surface-s), 18%);
+
+  --border: hsla(0, 0%, 100%, 0.08);
+  --border-hover: hsla(0, 0%, 100%, 0.15);
+  --text-primary: hsl(240, 20%, 96%);
+  --text-secondary: hsl(240, 15%, 70%);
+  --text-muted: hsl(240, 10%, 45%);
+  
   --accent: #7c6aff;
-  --accent-glow: rgba(124, 106, 255, 0.3);
+  --accent-glow: rgba(124, 106, 255, 0.4);
   --accent-2: #ff6a9b;
-  --range-bg: rgba(124, 106, 255, 0.12);
-  --today-bg: rgba(255, 106, 155, 0.15);
-  --sunday: #ff6a9b;
-  --saturday: #a78bff;
-  --shadow: 0 32px 80px rgba(0,0,0,0.5);
-  --radius: 20px;
-  --radius-sm: 10px;
-  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --shadow-sm: 0 4px 12px rgba(0,0,0,0.5);
+  --shadow-md: 0 12px 32px rgba(0,0,0,0.6);
+  --shadow-lg: 0 32px 80px rgba(0,0,0,0.8);
+  
+  --radius-lg: 32px;
+  --radius-md: 20px;
+  --radius-sm: 12px;
+  
+  --transition-gentle: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-snappy: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Utilities */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.premium-inner-shadow {
+  box-shadow: inset 0 1px 1px hsla(0,0%,100%,0.05), 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.glass-panel {
+  background: hsla(var(--surface-h), var(--surface-s), var(--surface-l), 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
 }
 
 html, body {
@@ -42,8 +79,8 @@ html, body {
   justify-content: center;
   padding: 24px;
   background: 
-    radial-gradient(ellipse at 20% 0%, rgba(124,106,255,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 100%, rgba(255,106,155,0.08) 0%, transparent 60%),
+    radial-gradient(circle at 15% 15%, hsla(var(--bg-h), 80%, 40%, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, hsla(330, 80%, 40%, 0.05) 0%, transparent 40%),
     var(--bg);
 }
 
